@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Wyszukiwarka tytułów</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f4f4f4;
+    }
+    h1 {
+      color: #222;
+    }
+    input {
+      padding: 0.6rem;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    ul {
+      margin-top: 1.5rem;
+      padding-left: 0;
+      list-style: none;
+    }
+    li {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    a {
+      color: #007acc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .tytul {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .slowa {
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Wyszukiwarka tytułów</h1>
+  <input type="text" id="searchInput" placeholder="Wpisz słowo kluczowe...">
+  <ul id="resultsList"><li>Ładowanie danych...</li></ul>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const list = document.getElementById('resultsList');
+    let entries = [];
+
+    fetch('tytuly.json')
+      .then(res => res.json())
+      .then(data => {
+        entries = data;
+        showResults(entries);
+      })
+      .catch(() => {
+        list.innerHTML = '<li style="color: red;">Błąd ładowania danych</li>';
+      });
+
+    function showResults(items) {
+      list.innerHTML = '';
+      if (items.length === 0) {
+        list.innerHTML = '<li>Brak wyników</li>';
+        return;
+      }
+
+      items.forEach(entry => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="tytul"><a href="${entry.link}" target="_blank">${entry.tytul}</a></div>
+          <div class="slowa">Słowa kluczowe: ${entry.slowa.join(', ')}</div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    input.addEventListener('input', () => {
+      const query = input.value.toLowerCase().trim();
+      if (!query) {
+        showResults(entries);
+        return;
+      }
+
+      const filtered = entries.filter(entry =>
+        entry.slowa.some(word => word.toLowerCase().includes(query))
+        || entry.tytul.toLowerCase().includes(query)
+      );
+
+      showResults(filtered);
+    });
+  </script>
+
+</body>
+</html>

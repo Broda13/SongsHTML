@@ -1,0 +1,17 @@
+[
+  {
+    "tytul": "W pustyni i w puszczy",
+    "slowa": ["pustynia", "Sienkiewicz", "Afryka", "przygoda"],
+    "link": "https://example.com/pustynia"
+  },
+  {
+    "tytul": "Lalka",
+    "slowa": ["Bolesław Prus", "Warszawa", "społeczeństwo"],
+    "link": "https://example.com/lalka"
+  },
+  {
+    "tytul": "Wiedźmin: Ostatnie życzenie",
+    "slowa": ["fantasy", "Sapkowski", "Geralt", "wiedźmin"],
+    "link": "https://example.com/wiedzmin"
+  }
+]
