@@ -404,10 +404,6 @@
 {"tytul": "Historia złego sternika, co nie używał grzebyka", "slowa": ["Stara Kuźnia "], "link": "wd/Historia_złego_sternika.png"},
 {"tytul": "Ballada dla Potęgowej", "slowa": ["Tadeusz Woźniak "], "link": "wd/Ballada_dla_potegowej.png"},
 {"tytul": "Asfaltowe łąki", "slowa": ["Grupa ABC", "Bez Jacka", "A ty tylko pod nogami masz"], "link": "wd/Asfaltowe_laki.png"},
-<<<<<<< HEAD
-{"tytul": "Śnieg i mgła", "slowa": ["Mirosław Peszkowski", "Zaginął już"], "link": "wd/Snieg_i_mgla.png"}
-
-=======
 {"tytul": "Śnieg i mgła", "slowa": ["Mirosław Peszkowski", "Zaginął już"], "link": "wd/Snieg_i_mgla.png"},
 {"tytul": "A Ja Sobie Śpiewam", "slowa": ["Adam Drag "], "link": "https://spiewnik.wywrota.pl/adam-drag/a-ja-sobie-spiewam"},
 {"tytul": "Chyba Już Czas", "slowa": ["Adam Drag "], "link": "https://spiewnik.wywrota.pl/adam-drag/chyba-juz-czas"},
@@ -5970,5 +5966,4 @@
 {"tytul": "Preludium", "slowa": ["Zgormysyny "], "link": "https://spiewnik.wywrota.pl/zgormysyny/preludium"},
 {"tytul": "Zlotym Szlakiem", "slowa": ["Zgormysyny "], "link": "https://spiewnik.wywrota.pl/zgormysyny/zlotym-szlakiem"},
 {"tytul": "Zoltym Szkaliem", "slowa": ["Zgormysyny "], "link": "https://spiewnik.wywrota.pl/zgormysyny/zoltym-szkaliem"}
->>>>>>> a75b76a (Wywrota)
 ]
