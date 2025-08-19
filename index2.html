@@ -32,7 +32,7 @@
       /* margin-bottom: 1rem; */
       /* border-radius: 6px; */
       /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
-    /*} 
+    /*} */
     a {
       color: #007acc;
       text-decoration: none;
@@ -43,9 +43,13 @@
       margin-bottom: 0.3rem;
     }
     .slowa {
-      font-size: 0.9rem;
-      color: #666;
+      font-size: 1.1rem;
+      color: #868887;
     }
+    .autor {
+      font-size: 0.6rem;
+      color: #666;
+    }   
   </style>
 </head>
 <body>
@@ -63,6 +67,12 @@
       .then(res => res.json())
       .then(data => {
         entries = data;
+        entries = entries.map(e => ({
+        ...e,
+        tytulLower: e.tytul.toLowerCase(),
+        autorLower: e.autor.toLowerCase(),
+        kluczeLower: e.klucze.map(k => k.toLowerCase())
+        }));
         showResults(entries);
       })
       .catch(() => {
@@ -79,29 +89,43 @@
       items.forEach(entry => {
         const li = document.createElement('li');
         li.innerHTML = `
-          <div class="tytul"><a href="${entry.link}">${entry.tytul}</a></div>
-          <!--
-          <div class="slowa">Słowa kluczowe: ${entry.slowa.join(', ')}</div>
-          -->
+          <div style="display:flex; gap:10px;">
+            <div class="tytul"><a href="${entry.link}">${entry.tytul}</a></div>
+            <div class="slowa">(${entry.autor})</div>
+          </div>
         `;
         list.appendChild(li);
       });
     }
 
-    input.addEventListener('input', () => {
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    input.addEventListener('input', debounce(() => {
       const query = input.value.toLowerCase().trim();
       if (!query) {
         showResults(entries);
         return;
       }
 
-      const filtered = entries.filter(entry =>
-        entry.slowa.some(word => word.toLowerCase().includes(query))
-        || entry.tytul.toLowerCase().includes(query)
-      );
+      // const filtered = entries.filter(entry =>
+      //   entry.klucze.some(word => word.toLowerCase().includes(query))
+      //   || entry.tytul.toLowerCase().includes(query)
+      //   || entry.autor.toLowerCase().includes(query)
+      // );
 
+      const filtered = entries.filter(entry =>
+        entry.kluczeLower.some(word => word.includes(query))
+        || entry.tytulLower.includes(query)
+        || entry.autorLower.includes(query)
+      );
       showResults(filtered);
-    });
+    }));
   </script>
 
 </body>
