@@ -65,6 +65,22 @@
   <header>
   <h1>Wyszukiwarka tytułów piosenek</h1>
   <input type="text" id="searchInput" placeholder="Wpisz słowo kluczowe...">
+  <select id="levelSelect" multiple size="4">
+    <option value="LM">Masowe</option>
+    <option value="LZ">Znane</option>
+    <option value="LN">Nieznane</option>
+    <option value="LU">Nieokreślone</option>
+  </select>
+  <select id="typeSelect" multiple size="4">
+    <option value="L">Poetyckie</option>
+    <option value="M">Żeglarskie</option>
+    <option value="P">Popularne</option>
+    <option value="T">Turystyczne</option>
+    <option value="H">Harcerskie</option>
+    <option value="K">Kabaretowe</option>
+    <option value="I">Inne</option>
+  </select>
+
   </header>
  
   <ul id="resultsList"><li>Ładowanie danych...</li></ul>
@@ -72,19 +88,20 @@
   <script>
     const input = document.getElementById('searchInput');
     const list = document.getElementById('resultsList');
+    const levelSelect = document.getElementById('levelSelect');
+    const typeSelect = document.getElementById('typeSelect');
     let entries = [];
 
     fetch('tytuly.json')
       .then(res => res.json())
       .then(data => {
-        entries = data;
-        entries = entries.map(e => ({
-        ...e,
-        tytulLower: e.tytul.toLowerCase(),
-        autorLower: e.autor.toLowerCase(),
-        kluczeLower: e.klucze.map(k => k.toLowerCase())
+        entries = data.map(e => ({
+          ...e,
+          titleLower: e.title.toLowerCase(),
+          authorLower: e.author.toLowerCase(),
+          keysLower: e.keys.map(k => k.toLowerCase())
         }));
-        showResults(entries);
+        applyFilters();
       })
       .catch(() => {
         list.innerHTML = '<li style="color: red;">Błąd ładowania danych</li>';
@@ -101,8 +118,8 @@
         const li = document.createElement('li');
         li.innerHTML = `
           <div style="display:flex; gap:10px;">
-            <div class="tytul"><a href="${entry.link}">${entry.tytul}</a></div>
-            <div class="slowa">(${entry.autor})</div>
+            <div class="tytul"><a href="${entry.link}">${entry.title}</a></div>
+            <div class="slowa">(${entry.author})</div>
           </div>
         `;
         list.appendChild(li);
@@ -117,26 +134,41 @@
       };
     }
 
-    input.addEventListener('input', debounce(() => {
-      const query = input.value.toLowerCase().trim();
-      if (!query) {
-        showResults(entries);
-        return;
-      }
-// 
-      // const filtered = entries.filter(entry =>
-      //   entry.klucze.some(word => word.toLowerCase().includes(query))
-      //   || entry.tytul.toLowerCase().includes(query)
-      //   || entry.autor.toLowerCase().includes(query)
-      // );
+    function getSelectedValues(select) {
+      return Array.from(select.selectedOptions).map(o => o.value);
+    }
 
-      const filtered = entries.filter(entry =>
-        entry.kluczeLower.some(word => word.includes(query))
-        || entry.tytulLower.includes(query)
-        || entry.autorLower.includes(query)
-      );
+    function applyFilters() {
+      const query = input.value.toLowerCase().trim();
+      const selectedLevels = getSelectedValues(levelSelect);
+      const selectedTypes = getSelectedValues(typeSelect);
+
+      const filtered = entries.filter(entry => {
+        // tekst
+        const matchesText =
+          !query ||
+          entry.keysLower.some(word => word.includes(query)) ||
+          entry.titleLower.includes(query) ||
+          entry.authorLower.includes(query);
+
+        // level
+        const matchesLevel =
+          selectedLevels.length === 0 || selectedLevels.includes(entry.level);
+
+        // type
+        const matchesType =
+          selectedTypes.length === 0 || selectedTypes.includes(entry.type);
+
+        return matchesText && matchesLevel && matchesType;
+      });
+
       showResults(filtered);
-    }));
+    }
+
+    // zdarzenia
+    input.addEventListener('input', debounce(applyFilters, 200));
+    levelSelect.addEventListener('change', applyFilters);
+    typeSelect.addEventListener('change', applyFilters);
   </script>
 
 </body>
