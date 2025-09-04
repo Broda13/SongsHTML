@@ -5,6 +5,15 @@
   <title>Wyszukiwarka tytułów</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    header {
+      background: #f8f8f8;
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      flex-shrink: 0; /* nie zmniejszaj nagłówka */
+    }
     body {
       font-family: sans-serif;
       margin: 2rem;
@@ -53,9 +62,11 @@
   </style>
 </head>
 <body>
-
+  <header>
   <h1>Wyszukiwarka tytułów piosenek</h1>
   <input type="text" id="searchInput" placeholder="Wpisz słowo kluczowe...">
+  </header>header>
+ 
   <ul id="resultsList"><li>Ładowanie danych...</li></ul>
 
   <script>
