@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Wyszukiwarka tytułów</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    header {
+      background: #f8f8f8;
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      flex-shrink: 0;
+      /* nie zmniejszaj nagłówka */
+    }
+
+fieldset {
+  border: 1px solid #ddd;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+fieldset[style*="display: none"] {
+  display: none !important;
+}
+
+header legend {
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 0;     /* usuwa domyślne odstępy */
+  margin-left: 0; /* dosunięcie do lewej */
+}
+
+header label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.85rem;
+  margin: 0;
+  padding: 0;
+}
+
+header label input[type="checkbox"] {
+  margin: 0 6px 0 0; /* odstęp tylko po prawej stronie checkboxa */
+}
+
+
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f4f4f4;
+    }
+
+    h1 {
+      color: #222;
+    }
+
+    input {
+      padding: 0.6rem;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    ul {
+      margin-top: 1.5rem;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    /* li {
+      /* background: white; */
+    /* padding: 1rem; */
+    /* margin-bottom: 1rem; */
+    /* border-radius: 6px; */
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+    /*} */
+    a {
+      color: #007acc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .tytul {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .slowa {
+      font-size: 1.1rem;
+      color: #868887;
+    }
+
+    .autor {
+      font-size: 0.6rem;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Wyszukiwarka tytułów piosenek</h1>
+  <input type="text" id="searchInput" placeholder="Wpisz słowo kluczowe...">
+
+  <button type="button" onclick="toggleFilters()">Pokaż/ukryj filtry</button>
+
+  <fieldset id="levelSection" style="display: none;">
+    <legend>Poziom:</legend>
+    <label><input type="checkbox" name="level" value="LM"> Masowe</label>
+    <label><input type="checkbox" name="level" value="LZ"> Znane</label>
+    <label><input type="checkbox" name="level" value="LN"> Nieznane</label>
+    <label><input type="checkbox" name="level" value="LU"> Nieokreślone</label>
+  </fieldset>
+
+  <fieldset id="typeSection" style="display: none;">
+    <legend>Typ:</legend>
+    <label><input type="checkbox" name="type" value="L"> Poetyckie</label>
+    <label><input type="checkbox" name="type" value="M"> Żeglarskie</label>
+    <label><input type="checkbox" name="type" value="P"> Popularne</label>
+    <label><input type="checkbox" name="type" value="T"> Turystyczne</label>
+    <label><input type="checkbox" name="type" value="H"> Harcerskie</label>
+    <label><input type="checkbox" name="type" value="K"> Kabaretowe</label>
+    <label><input type="checkbox" name="type" value="I"> Inne</label>
+  </fieldset>
+</header>
+
+
+  <ul id="resultsList">
+    <li>Ładowanie danych...</li>
+  </ul>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    const list = document.getElementById('resultsList');
+    let entries = [];
+
+    fetch('tytuly.json')
+      .then(res => res.json())
+      .then(data => {
+        entries = data.map(e => ({
+          ...e,
+          titleLower: e.title.toLowerCase(),
+          authorLower: e.author.toLowerCase(),
+          keysLower: e.keys.map(k => k.toLowerCase())
+        }));
+        applyFilters();
+      })
+      .catch(() => {
+        list.innerHTML = '<li style="color: red;">Błąd ładowania danych</li>';
+      });
+
+    function showResults(items) {
+      list.innerHTML = '';
+      if (items.length === 0) {
+        list.innerHTML = '<li>Brak wyników</li>';
+        return;
+      }
+
+      items.forEach(entry => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div style="display:flex; gap:10px;">
+            <div class="tytul"><a href="${entry.link}">${entry.title}</a></div>
+            <div class="slowa">(${entry.author})</div>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    function getCheckedValues(name) {
+      return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+        .map(cb => cb.value);
+    }
+
+    function applyFilters() {
+      const query = input.value.toLowerCase().trim();
+      const selectedLevels = getCheckedValues("level");
+      const selectedTypes = getCheckedValues("type");
+
+      const filtered = entries.filter(entry => {
+        const matchesText =
+          !query ||
+          entry.keysLower.some(word => word.includes(query)) ||
+          entry.titleLower.includes(query) ||
+          entry.authorLower.includes(query);
+
+        const matchesLevel =
+          selectedLevels.length === 0 || selectedLevels.includes(entry.level);
+
+        const matchesType =
+          selectedTypes.length === 0 || selectedTypes.includes(entry.type);
+
+        return matchesText && matchesLevel && matchesType;
+      });
+
+      showResults(filtered);
+    }
+function toggleFilters() {
+  const level = document.getElementById('levelSection');
+  const type = document.getElementById('typeSection');
+  const isHidden = level.style.display === "none";
+
+  level.style.display = isHidden ? "block" : "none";
+  type.style.display = isHidden ? "block" : "none";
+}
+    // zdarzenia
+    input.addEventListener('input', debounce(applyFilters, 200));
+    document.querySelectorAll('input[name="level"], input[name="type"]').forEach(cb =>
+      cb.addEventListener('change', applyFilters)
+    );
+  </script>
+</body>
+
+</html>

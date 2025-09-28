@@ -88,3 +88,15 @@ div.MsoNormal {
     padding-top: 0;
     padding-bottom: 0;
 }
+p.Chwyty,
+li.Chwyty,
+div.Chwyty {
+    margin: 0; 
+    font-size: 13.0pt;
+    font-family: "Arial", sans-serif;
+    color: #1F497D;
+    font-weight: bold;
+    white-space: pre;
+    padding-top: 0;
+    padding-bottom: 0;
+}

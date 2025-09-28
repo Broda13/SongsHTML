@@ -2522,5 +2522,6 @@
 {"title": "Niech Moje Wiersze", "author": "Zgórmysyny", "type": "T", "level": "LN",  "keys": [""], "link": "https://spiewnik.wywrota.pl/zgormysyny/niech-moje-wiersze"},
 {"title": "Preludium", "author": "Zgórmysyny", "type": "T", "level": "LN",  "keys": [""], "link": "https://spiewnik.wywrota.pl/zgormysyny/preludium"},
 {"title": "Złotym Szlakiem", "author": "Zgórmysyny", "type": "T", "level": "LN",  "keys": [""], "link": "https://spiewnik.wywrota.pl/zgormysyny/zlotym-szlakiem"},
-{"title": "Żółtym Szlakiem", "author": "Zgórmysyny", "type": "T", "level": "LN",  "keys": [""], "link": "https://spiewnik.wywrota.pl/zgormysyny/zoltym-szkaliem"}
+{"title": "Żółtym Szlakiem", "author": "Zgórmysyny", "type": "T", "level": "LN",  "keys": [""], "link": "https://spiewnik.wywrota.pl/zgormysyny/zoltym-szkaliem"},
+{"title": "Jak (Wersja Pierwsza - od Dziadzi)", "author": "Stachura/Dziadzia", "type": "L", "level": "LZ",  "keys": [""], "link": "songs/Jak_1.html"}
 ]
