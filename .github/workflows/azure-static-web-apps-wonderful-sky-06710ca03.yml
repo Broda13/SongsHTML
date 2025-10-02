@@ -22,3 +22,4 @@ jobs:
           app_location: "/"       # folder ze stroną (root repo)
           api_location: ""        # brak backendu
           output_location: "/"    # brak build folderu
+          skip_build: true               # <- mówi Azure, żeby nie próbowało buildować
